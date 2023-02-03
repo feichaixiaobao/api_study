@@ -1,0 +1,35 @@
+logging: 
+  config: classpath:log/logback.xml
+
+spring:
+  http:
+    encoding:
+      force: true
+      ### 模版引擎编码为UTF-8
+      charset: UTF-8
+  ###ThymeLeaf配置
+  thymeleaf:
+    #prefix：指定模板所在的目录
+    prefix: classpath:/templates/thymeleaf/
+    #check-tempate-location: 检查模板路径是否存在
+    check-template-location: true
+    #cache: 是否缓存，开发模式下设置为false，避免改了模板还要重启服务器，线上设置为true，可以提高性能。
+    # cache: true 生产环境false 开发环境true
+    cache: false
+    suffix:  .html
+    encoding: UTF-8
+    mode: HTML5
+  ###freemarker配置
+  freemarker:
+    allow-request-override: false
+    cache: false
+    check-template-location: true
+    charset: UTF-8
+    content-type: text/html; charset=utf-8
+    expose-request-attributes: false
+    expose-session-attributes: false
+    expose-spring-macro-helpers: false
+    ## 模版文件结尾.ftl
+    suffix: .ftl
+    ## 模版文件目录
+    template-loader-path: classpath:/templates/freemarker/
