@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title> movie搜索主页</title>
+</head>
+
+<body >
+<div th:each="movie: ${movieList}" style="width: 200px;height: 200px;float: left;border: 1px solid red;margin-left: 20px;margin-top: 20px;">
+	title:<div th:utext="${movie.title}">
+		
+	</div>
+	
+	roleDesc:<div th:utext="${movie.roleDesc}">
+		
+	</div>
+</div>
+</body>
+
+</html>
