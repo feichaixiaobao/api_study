@@ -7,12 +7,102 @@
   <version>1.0-SNAPSHOT</version>
   <name>api_study</name>
   <url>http://maven.apache.org</url>
+  <parent>
+	  <groupId>org.springframework.boot</groupId>
+	  <artifactId>spring-boot-starter-parent</artifactId>
+	  <version>2.1.8.RELEASE</version>
+  </parent>
+  
   <dependencies>
+	  <!--Spring SpringMVC-->
+    <dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    
+    <!--Spring thymeleaf-->
+    <dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-thymeleaf</artifactId>
+	</dependency>
+	  
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+		<groupId>com.google.code.gson</groupId>
+		<artifactId>gson</artifactId>
+		<version>2.10.1</version>
+	</dependency>
+	<dependency>
+		<groupId>com.google.guava</groupId>
+		<artifactId>guava</artifactId>
+		<version>31.1-jre</version>
+	</dependency>
+	
+	<!--Lucene start-->
+	  <!-- Lucence核心包 -->
+	  <dependency>
+		  <groupId>org.apache.lucene</groupId>
+		  <artifactId>lucene-core</artifactId>
+		  <version>5.3.1</version>
+	  </dependency>
+	  
+	  <!-- Lucene查询解析包 -->
+	  <dependency>
+		  <groupId>org.apache.lucene</groupId>
+		  <artifactId>lucene-queryparser</artifactId>
+		  <version>5.3.1</version>
+	  </dependency>
+	  
+	  <!-- Lucene查询解析包 -->
+	  <dependency>
+		  <groupId>org.apache.lucene</groupId>
+		  <artifactId>lucene-analyzers-common</artifactId>
+		  <version>5.3.1</version>
+	  </dependency>
+	  
+	  <!-- 支持分词高亮 -->
+	  <dependency>
+		  <groupId>org.apache.lucene</groupId>
+		  <artifactId>lucene-highlighter</artifactId>
+		  <version>5.3.1</version>
+	  </dependency>
+	  
+	  <!--支持中文分词  -->
+	  <dependency>
+		  <groupId>org.apache.lucene</groupId>
+		  <artifactId>lucene-analyzers-smartcn</artifactId>
+		  <version>5.3.1</version>
+	  </dependency>
+	  
+	   <!--支持中文分词  -->
+	  <dependency>
+		  <groupId>cn.shenyanchao.ik-analyzer</groupId>
+		  <artifactId>ik-analyzer</artifactId>
+		  <version>9.0.0</version>
+      </dependency>
+	  <!--Lucene end-->
+	  <dependency>
+		  <groupId>org.projectlombok</groupId>
+		  <artifactId>lombok</artifactId>
+	  </dependency>
+	  
   </dependencies>
+  
+  <build>
+	<resources>
+		<resource>
+			<directory>data</directory>
+			<includes>
+				<include>*.json</include>
+			</includes>
+			<filtering>false</filtering>
+		</resource>
+	</resources>  
+  </build>
 </project>
