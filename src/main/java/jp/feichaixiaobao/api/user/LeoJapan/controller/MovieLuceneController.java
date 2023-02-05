@@ -38,12 +38,12 @@ public class MovieLuceneController {
 	}
 	
 	@RequestMapping("/searchMovieByTitle")
-	public String searchMovieByTitle(String title, Map<String, Object> result) throws IOException, ParseException, InvalidTokenOffsetsException  {
+	public String searchMovieByTitle(String keywords, Map<String, Object> result) throws IOException, ParseException, InvalidTokenOffsetsException  {
 		
-		log.info("电影名（模糊查询）开始，标题="+title);
+		log.info("电影名（模糊查询）开始，关键字="+keywords);
 		
 		//以电影名标题为条件，进行查询
-		List<MovieInfoEntity> mvList = movieLuceneService.searchMovieByTitle(title);
+		List<MovieInfoEntity> mvList = movieLuceneService.searchMovieByFiled(MovieConstant.KEY_TITLE, keywords);
 
         result.put("movieList", mvList);
         
@@ -52,4 +52,48 @@ public class MovieLuceneController {
 		return "movieSearchResult";
 	}
 	
+	@RequestMapping("/searchMovieByOriginalTitle")
+	public String searchMovieByOriginalTitle(String keywords, Map<String, Object> result) throws IOException, ParseException, InvalidTokenOffsetsException  {
+		
+		log.info("电影原文名（模糊查询）开始，关键字="+keywords);
+		
+		//以电影名标题为条件，进行查询
+		List<MovieInfoEntity> mvList = movieLuceneService.searchMovieByFiled(MovieConstant.KEY_ORIG_TITLE, keywords);
+
+        result.put("movieList", mvList);
+        
+        log.info("电影原文名（模糊查询）结束");
+        
+		return "movieSearchResult";
+	}
+	
+	@RequestMapping("/searchMovieByRoleDesc")
+	public String searchMovieByRoleDesc(String keywords, Map<String, Object> result) throws IOException, ParseException, InvalidTokenOffsetsException  {
+		
+		log.info("电影角色简介（模糊查询）开始，关键字="+keywords);
+		
+		//以电影名标题为条件，进行查询
+		List<MovieInfoEntity> mvList = movieLuceneService.searchMovieByFiled(MovieConstant.KEY_ROLE_DESC, keywords);
+
+        result.put("movieList", mvList);
+        
+        log.info("电影角色简介（模糊查询）结束");
+        
+		return "movieSearchResult";
+	}
+	
+	@RequestMapping("/searchMovieByFullField")
+	public String searchMovieByFullField(String keywords, Map<String, Object> result) throws IOException, ParseException, InvalidTokenOffsetsException  {
+		
+		log.info("电影名（关键字全文查询）开始，关键字="+keywords);
+		
+		//以电影名标题为条件，进行查询
+		List<MovieInfoEntity> mvList = movieLuceneService.searchMovieByFullField(keywords);
+
+        result.put("movieList", mvList);
+        
+        log.info("电影名（关键字全文查询）结束");
+        
+		return "movieSearchResult";
+	}
 }

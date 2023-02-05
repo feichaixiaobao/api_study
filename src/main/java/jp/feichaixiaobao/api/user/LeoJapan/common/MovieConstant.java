@@ -19,5 +19,7 @@ public class MovieConstant {
 	public static final String KEY_ORIG_TITLE ="original_title";
 	/** 电影信息 标题字段(title) */
 	public static final String KEY_ROLE_DESC ="role_desc";
+	/** 电影信息 全文字段(title,original_title,role_desc) */
+	public static final String[] KEY_FULL_FIELD = {KEY_TITLE,KEY_ORIG_TITLE,KEY_ROLE_DESC};
 	
 }
