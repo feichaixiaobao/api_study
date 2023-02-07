@@ -35,7 +35,8 @@
 > **3.课题与QA：** 
 > - [x] 1. github push提交报错问题  
 >    **(已解决，Personal Access Token重建，使用新的token登录即可)**
-
+> - [x] 2. github rejected non-fast-forward报错问题  
+>    **(已解决，出现了与远程仓库代码冲突的情况，解决办法分为两步：第一：Fetch ，第二步：Merge或者push<看情况而定>)**
 ### 实现方案2：数据库(欢迎指摘)
 
 ### 实现方案3：线上网站爬虫(待研究)
