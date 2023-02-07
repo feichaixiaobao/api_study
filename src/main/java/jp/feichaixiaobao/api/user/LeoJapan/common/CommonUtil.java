@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
 import com.google.common.io.Resources;
 
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,18 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class CommonUtil {
+	
+	/**
+	 * @Description: 空字符串初始化处理
+	 * @param val 处理字符串
+	 * @return String 空值orNull值时，返回默认初始值0
+	 * @version v1.0
+	 * @author LeoJapan
+	 * @date 2023年2月7日 
+	 **/
+	public static String initEmptyValue(String val) {
+		return Strings.isNullOrEmpty(val) ? "0" : val;
+	}
 	
 	/**
 	 * @Description: 文件读入，转为JSON字符串

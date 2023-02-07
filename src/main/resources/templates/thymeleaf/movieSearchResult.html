@@ -10,15 +10,18 @@
 
 <body >
 <div th:each="movie: ${movieList}" style="width: 200px;height: 200px;float: left;border: 1px solid red;margin-left: 20px;margin-top: 20px;">
-	title:<div th:utext="${movie.title}">
+	上映时间(Year):<div th:utext="${movie.year}">
+		
+	</div>
+	电影名(title):<div th:utext="${movie.title}">
 		
 	</div>
 	
-	original_title:<div th:utext="${movie.originalTitle}">
+	电影原文名(original_title):<div th:utext="${movie.originalTitle}">
 		
 	</div>
 	
-	roleDesc:<div th:utext="${movie.roleDesc}">
+	角色简介(roleDesc):<div th:utext="${movie.roleDesc}">
 		
 	</div>
 </div>
