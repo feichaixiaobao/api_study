@@ -82,6 +82,21 @@ public class MovieLuceneController {
 		return "movieSearchResult";
 	}
 	
+	@RequestMapping("/searchMovieByYear")
+	public String searchMovieByYear(String startYear, String endYear, Map<String, Object> result) throws IOException, ParseException, InvalidTokenOffsetsException  {
+		
+		log.info("电影上映时间（期间查询）开始，开始时间="+startYear+", 结束时间="+endYear);
+		
+		//以电影上映时间为条件，进行查询
+		List<MovieInfoEntity> mvList = movieLuceneService.searchMovieByRange(MovieConstant.KEY_YEAR, startYear, endYear);
+
+        result.put("movieList", mvList);
+        
+        log.info("电影上映时间（期间查询）结束");
+        
+		return "movieSearchResult";
+	}
+	
 	@RequestMapping("/searchMovieByFullField")
 	public String searchMovieByFullField(String keywords, Map<String, Object> result) throws IOException, ParseException, InvalidTokenOffsetsException  {
 		

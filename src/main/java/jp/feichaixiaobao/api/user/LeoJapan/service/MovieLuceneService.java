@@ -33,6 +33,17 @@ public interface MovieLuceneService {
 	 **/
 	public List<MovieInfoEntity> searchMovieByFiled(String fieldName, String keywords);
 	
+	/**@Description: 以单个字段为条件，进行区间查询
+	 * @param fieldName 查询字段的名称
+	 * @param minVal 最小值
+	 * @param maxVal 最大值
+	 * @return 电影信息查询结果
+	 * @version v1.0
+	 * @author LeoJapan
+	 * @date 2023年2月7日 
+	 **/
+	public List<MovieInfoEntity> searchMovieByRange(String fieldName, String minVal, String maxVal);
+	
 	/**
 	 * @Description: 关键字查询(全文查询) 
 	 * @param keyWords 关键字

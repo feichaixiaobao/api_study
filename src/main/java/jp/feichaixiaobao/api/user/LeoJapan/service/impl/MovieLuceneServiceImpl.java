@@ -11,6 +11,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.LongField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
@@ -20,6 +21,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
@@ -38,6 +40,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import jp.feichaixiaobao.api.user.LeoJapan.common.CommonUtil;
 import jp.feichaixiaobao.api.user.LeoJapan.common.MovieConstant;
 import jp.feichaixiaobao.api.user.LeoJapan.entity.MovieInfoEntity;
 import jp.feichaixiaobao.api.user.LeoJapan.service.MovieLuceneService;
@@ -77,7 +80,10 @@ public class MovieLuceneServiceImpl implements MovieLuceneService{
         	doc.add(new StringField("id", movieInfo.getId(), Field.Store.YES));
         	doc.add(new TextField("title", movieInfo.getTitle(), Field.Store.YES));
         	doc.add(new TextField("original_title", movieInfo.getOriginalTitle(), Field.Store.YES));
-        	doc.add(new TextField("year", movieInfo.getYear(), Field.Store.YES));
+        	//日期，价格相关的索引查询可采取同样的方式实现，
+        	//创建索引时使用LongField类型
+        	//索引查询时使用NumericRangeQuery进行区间查询
+        	doc.add(new LongField("year", Long.parseLong(CommonUtil.initEmptyValue(movieInfo.getYear())), Field.Store.YES));
         	doc.add(new TextField("role_desc", movieInfo.getRoleDesc(), Field.Store.YES));
         	
         	docs.add(doc);
@@ -175,6 +181,12 @@ public class MovieLuceneServiceImpl implements MovieLuceneService{
 	            										   doc,
 	            										   MovieConstant.KEY_ROLE_DESC,
 	            										   fieldName));
+	            //电影上映时间Year
+	            mvInfoEntity.setYear(handleHighlighter(highlighter,
+	            										analyzer,
+	            										doc,
+	            										MovieConstant.KEY_YEAR,
+	            										fieldName));
 	            mvList.add(mvInfoEntity);
 	        }
         
@@ -185,6 +197,96 @@ public class MovieLuceneServiceImpl implements MovieLuceneService{
 		return mvList;
 	}
 	
+	/**@Description: 以单个字段为条件，进行区间查询
+	 * @param fieldName 查询字段的名称
+	 * @param minVal 最小值
+	 * @param maxVal 最大值
+	 * @return 电影信息查询结果
+	 * @version v1.0
+	 * @author LeoJapan
+	 * @date 2023年2月7日 
+	 **/
+	public List<MovieInfoEntity> searchMovieByRange(String fieldName, String minVal, String maxVal) {
+		
+		//电影信息查询结果初始化
+		List<MovieInfoEntity> mvList = new ArrayList<>();
+		
+		try {
+			
+			Directory directory = FSDirectory.open(Paths.get(MovieConstant.LUCENE_INDEX_PATH));
+			
+			// 索引读取工具
+			IndexReader reader = DirectoryReader.open(directory);
+			
+			// 索引搜索工具
+			IndexSearcher searcher = new IndexSearcher(reader);
+			
+			//标准分词器，会自动去掉空格啊，is a the等单词
+	        Analyzer analyzer = new StandardAnalyzer();
+	        
+	        //查询解析器
+//	        QueryParser parser = new QueryParser(fieldName, analyzer);
+	        
+	        // 创建区间查询对象
+	        long minDate = Long.parseLong(minVal);
+	        long maxDate = Long.parseLong(maxVal);
+	        
+	        NumericRangeQuery<Long> query = NumericRangeQuery.newLongRange(MovieConstant.KEY_YEAR, minDate, maxDate, true, true);
+	        
+	        //开始查询，查询前1000条数据，将记录保存在docs中
+	        TopDocs topDocs = searcher.search(query, 1000);
+	        
+	        //高亮显示初始化
+	        Highlighter highlighter = initHighlighter(query);
+	        
+	        // 获取得分文档对象（ScoreDoc）数组.SocreDoc中包含：文档的编号、文档的得分
+	        ScoreDoc[] scoreDocs = topDocs.scoreDocs;
+	        
+	        //电影信息查询结果编辑
+	        for (ScoreDoc scoreDoc : scoreDocs) {
+            
+	            // 根据编号去找文档
+	            Document doc = searcher.doc(scoreDoc.doc);
+	            MovieInfoEntity mvInfoEntity = new MovieInfoEntity();
+	            mvInfoEntity.setId(doc.get("id"));
+	            
+	            //处理高亮字段显示         
+	            //电影中文名Title
+	            mvInfoEntity.setTitle(handleHighlighter(highlighter,
+	            										analyzer,
+	            										doc,
+	            										MovieConstant.KEY_TITLE,
+	            										fieldName));
+	            
+	            //电影英文名OriginalTitle
+	            mvInfoEntity.setOriginalTitle(handleHighlighter(highlighter,
+	            												analyzer,
+	            												doc,
+	            												MovieConstant.KEY_ORIG_TITLE,
+	            												fieldName));
+	            
+	            //电影角色简介RoleDesc
+	            mvInfoEntity.setRoleDesc(handleHighlighter(highlighter,
+	            										   analyzer,
+	            										   doc,
+	            										   MovieConstant.KEY_ROLE_DESC,
+	            										   fieldName));
+	            //电影上映时间Year
+	            mvInfoEntity.setYear(handleHighlighter(highlighter,
+	            										analyzer,
+	            										doc,
+	            										MovieConstant.KEY_YEAR,
+	            										fieldName));
+	            mvList.add(mvInfoEntity);
+	        }
+        
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		
+		return mvList;
+	}
+
 	/**
 	 * @Description: 关键字查询(全文查询) 
 	 * @param keyWords 关键字
@@ -259,6 +361,11 @@ public class MovieLuceneServiceImpl implements MovieLuceneService{
 	            										   analyzer,
 	            										   doc,
 	            										   MovieConstant.KEY_ROLE_DESC));
+	            //电影上映时间Year
+	            mvInfoEntity.setYear(handleHighlighter(highlighter,
+	            										analyzer,
+	            										doc,
+	            										MovieConstant.KEY_YEAR));
 	            mvList.add(mvInfoEntity);
 	        }
         
